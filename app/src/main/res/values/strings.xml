@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">EX3 Color Picker</string>
+    <string name="color_placeholder">Select a Color!</string>
+</resources>
