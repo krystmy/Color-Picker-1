@@ -1,5 +1,6 @@
 package cse340.colorpicker;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -21,6 +22,8 @@ public class MainActivity extends PickerActivity {
         final View colorView = findViewById(R.id.colorResult);
         final TextView labelView = findViewById(R.id.colorTextView);
 
+        labelView.setText(colorToString(colorPicker.mCurrentColor));
+        colorView.setBackgroundColor(colorPicker.mCurrentColor);
         // TODO: Register callback to update {color,label}View when color changed.
         // TIP: To get the ColorPickerView, just use `colorPicker` without qualifiers.
         // TIP: See PickerActivity#colorToString(int), which you can call without qualifiers
@@ -35,6 +38,8 @@ public class MainActivity extends PickerActivity {
      */
     private void setStartingColor(Bundle state) {
         // TODO: Set ColorPicker color from state.
+        if(state == null) {
+        }
         // HINT: If state == null, then there was no saved state.
         //       In this case, use ColorPicker.DEFAULT_COLOR
     }

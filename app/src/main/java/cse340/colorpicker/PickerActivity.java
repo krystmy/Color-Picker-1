@@ -24,6 +24,8 @@ public class PickerActivity extends AppCompatActivity {
 
         // Color picker exists in activity_main.xml, find it by ID.
         colorPicker = findViewById(R.id.colorPicker);
+
+
     }
 
     /***
