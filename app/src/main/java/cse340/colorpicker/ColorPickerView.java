@@ -20,11 +20,9 @@ import android.widget.ImageView;
  * PLEASE READ ColorPicker.java to learn about these.
  */
 public class ColorPickerView extends ColorPicker {
-    private float angle;
     private int alpha;
     public ColorPickerView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        angle = (float) -3.14/2;
         mCurrentColor = DEFAULT_COLOR;
         mState = State.START;
         alpha = 255;
@@ -37,8 +35,8 @@ public class ColorPickerView extends ColorPicker {
 
         paint1.setColor(mCurrentColor);
         canvas.drawCircle(mCenterX,mCenterY, mRadius-mRadius*RADIUS_TO_THUMB_RATIO*2, paint1);
-        float centerX =  (float) (mCenterX + (mRadius - mRadius*RADIUS_TO_THUMB_RATIO)*Math.cos(angle));
-        float centerY =  (float) (mCenterY + (mRadius - mRadius*RADIUS_TO_THUMB_RATIO)*Math.sin(angle));
+        float centerX =  (float) (mCenterX + (mRadius - mRadius*RADIUS_TO_THUMB_RATIO)*Math.cos(getAngleFromColor(mCurrentColor)));
+        float centerY =  (float) (mCenterY + (mRadius - mRadius*RADIUS_TO_THUMB_RATIO)*Math.sin(getAngleFromColor(mCurrentColor)));
         paint1.setColor(Color.WHITE);
         paint1.setAlpha(alpha);
         canvas.drawCircle(centerX, centerY, mRadius*RADIUS_TO_THUMB_RATIO, paint1);
@@ -60,9 +58,8 @@ public class ColorPickerView extends ColorPicker {
     public boolean onTouchEvent(MotionEvent event) {
         EssentialGeometry geometry = essentialGeometry(event);
         float angle1 = getTouchAngle(event.getX(), event.getY());
-        this.angle = angle1;
         int color = getColorFromAngle(angle1);
-        Log.i("colorpicker", "angle " + angle + " name: " + colorToString(color));
+        Log.i("colorpicker", "angle " + angle1 + " name: " + colorToString(color));
         if(geometry == EssentialGeometry.WHEEL) {
             mState = State.INSIDE;
         } else {
@@ -72,18 +69,16 @@ public class ColorPickerView extends ColorPicker {
         switch (mState) {
              case START:
                  // TODO
-
+                 alpha = 255;
                  return true;
              case INSIDE:
                  if((event.getAction() == MotionEvent.ACTION_MOVE) || (event.getAction() == MotionEvent.ACTION_DOWN)) {
                      alpha = 255/2;
                      mCurrentColor = color;
-                     this.angle = angle1;
-                     invalidate();
                  } else {
                      alpha = 255;
-                     invalidate();
                  }
+                 invalidate();
                  return true;
                  // TODO
              default:
@@ -106,7 +101,8 @@ public class ColorPickerView extends ColorPicker {
         float[] HSL = new float[3];
         ColorUtils.colorToHSL(color, HSL);
         // TODO: Convert hue (degrees) to angle on wheel (radians).
-        return 0f;
+
+        return (float) Math.toRadians(HSL[0]-90);
     }
 
     /**
