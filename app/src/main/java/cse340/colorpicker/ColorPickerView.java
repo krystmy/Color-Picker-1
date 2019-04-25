@@ -59,9 +59,6 @@ public class ColorPickerView extends ColorPicker {
         EssentialGeometry geometry = essentialGeometry(event);
         float angle1 = getTouchAngle(event.getX(), event.getY());
         int color = getColorFromAngle(angle1);
-        Log.i("colorpicker", "angle " + angle1 + " name: " + colorToString(color));
-
-
         switch (mState) {
              case START:
                  // TODO
