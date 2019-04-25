@@ -20,19 +20,8 @@ public class MainActivity extends PickerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         final View colorView = findViewById(R.id.colorResult);
         final TextView labelView = findViewById(R.id.colorTextView);
-
-        if(savedInstanceState == null){
-            colorView.setBackgroundColor(colorPicker.mCurrentColor);
-            labelView.setText(colorToString(colorPicker.mCurrentColor));
-        }
-        else{
-            colorView.setBackgroundColor(savedInstanceState.getInt(C_KEY,colorPicker.mCurrentColor));
-            labelView.setText(savedInstanceState.getString(S_KEY, colorToString(colorPicker.mCurrentColor)));
-        }
-
         colorPicker.mColorListener = new ColorPicker.ColorListener() {
             @Override
             public void onColorSelected(int color) {
@@ -61,8 +50,8 @@ public class MainActivity extends PickerActivity {
             colorPicker.mCurrentColor = ColorPicker.DEFAULT_COLOR;
         }else {
             colorPicker.mCurrentColor = state.getInt(C_KEY, colorPicker.mCurrentColor);
-
         }
+        colorPicker.mColorListener.onColorSelected(colorPicker.mCurrentColor);
         // HINT: If state == null, then there was no saved state.
         //       In this case, use ColorPicker.DEFAULT_COLOR
     }
