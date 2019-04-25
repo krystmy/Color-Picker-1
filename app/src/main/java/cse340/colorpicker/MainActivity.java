@@ -15,6 +15,8 @@ import android.widget.TextView;
  * Here you will attach a ColorListener callback and add bundle support.
  */
 public class MainActivity extends PickerActivity {
+    private String C_KEY = "C_KEY";
+    private String S_KEY = "S_KEY";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,8 +24,25 @@ public class MainActivity extends PickerActivity {
         final View colorView = findViewById(R.id.colorResult);
         final TextView labelView = findViewById(R.id.colorTextView);
 
-        labelView.setText(colorToString(colorPicker.mCurrentColor));
-        colorView.setBackgroundColor(colorPicker.mCurrentColor);
+        if(savedInstanceState == null){
+            colorView.setBackgroundColor(colorPicker.mCurrentColor);
+            labelView.setText(colorToString(colorPicker.mCurrentColor));
+        }
+        else{
+            colorView.setBackgroundColor(savedInstanceState.getInt(C_KEY,colorPicker.mCurrentColor));
+            labelView.setText(savedInstanceState.getString(S_KEY, colorToString(colorPicker.mCurrentColor)));
+        }
+
+        colorPicker.mColorListener = new ColorPicker.ColorListener() {
+            @Override
+            public void onColorSelected(int color) {
+                colorView.setBackgroundColor(color);
+                labelView.setText(colorToString(color));
+                colorPicker.mCurrentColor = color;
+            }
+        };
+
+
         // TODO: Register callback to update {color,label}View when color changed.
         // TIP: To get the ColorPickerView, just use `colorPicker` without qualifiers.
         // TIP: See PickerActivity#colorToString(int), which you can call without qualifiers
@@ -39,6 +58,10 @@ public class MainActivity extends PickerActivity {
     private void setStartingColor(Bundle state) {
         // TODO: Set ColorPicker color from state.
         if(state == null) {
+            colorPicker.mCurrentColor = ColorPicker.DEFAULT_COLOR;
+        }else {
+            colorPicker.mCurrentColor = state.getInt(C_KEY, colorPicker.mCurrentColor);
+
         }
         // HINT: If state == null, then there was no saved state.
         //       In this case, use ColorPicker.DEFAULT_COLOR
@@ -47,7 +70,8 @@ public class MainActivity extends PickerActivity {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
+        outState.putInt(C_KEY, colorPicker.mCurrentColor);
+        outState.putString(S_KEY, colorPicker.colorToString(colorPicker.mCurrentColor));
         // TODO: get current color and save to bundle.
     }
 }

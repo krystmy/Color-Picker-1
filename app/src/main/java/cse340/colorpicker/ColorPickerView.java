@@ -60,32 +60,42 @@ public class ColorPickerView extends ColorPicker {
         float angle1 = getTouchAngle(event.getX(), event.getY());
         int color = getColorFromAngle(angle1);
         Log.i("colorpicker", "angle " + angle1 + " name: " + colorToString(color));
-        if(geometry == EssentialGeometry.WHEEL) {
-            mState = State.INSIDE;
-        } else {
-            mState = State.START;
-        }
+
 
         switch (mState) {
              case START:
                  // TODO
-                 alpha = 255;
+                 if((geometry == EssentialGeometry.WHEEL) && (event.getAction() == MotionEvent.ACTION_DOWN) ) {
+                     mCurrentColor = color;
+                     alpha = 255;
+                     invalidate();
+                     mState = State.INSIDE;
+
+                 }
                  return true;
              case INSIDE:
-                 if((event.getAction() == MotionEvent.ACTION_MOVE) || (event.getAction() == MotionEvent.ACTION_DOWN)) {
+                 if((event.getAction() == MotionEvent.ACTION_MOVE) && (geometry == EssentialGeometry.WHEEL)) {
                      alpha = 255/2;
                      mCurrentColor = color;
-                 } else {
-                     alpha = 255;
+                     invalidate();
+                 } else if((event.getAction() == MotionEvent.ACTION_UP)) {
+                     if((geometry == EssentialGeometry.WHEEL)){
+                         mCurrentColor = color;
+                         alpha = 255;
+                         invalidate();
+                         mColorListener.onColorSelected(mCurrentColor);
+
+                     } else {
+                         alpha = 255;
+                         mColorListener.onColorSelected(mCurrentColor);
+                         invalidate();
+                     }
                  }
-                 invalidate();
                  return true;
                  // TODO
              default:
                  return false;
          }
-
-
     }
     public String colorToString(@ColorInt int color) {
         return String.format("RGB #%06X", (0xFFFFFF & color));
